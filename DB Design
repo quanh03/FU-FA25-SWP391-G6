@@ -1,0 +1,165 @@
+CREATE DATABASE WarehouseDB;
+GO
+
+USE WarehouseDB;
+GO
+
+/* =====================================================
+   1. Users - Người dùng
+===================================================== */
+CREATE TABLE Users (
+    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    fullname NVARCHAR(100) NOT NULL,
+    email NVARCHAR(100) UNIQUE NOT NULL,
+    password NVARCHAR(255) NOT NULL,
+    phone NVARCHAR(20),
+    role NVARCHAR(20) CHECK (role IN ('admin','staff','manager')),
+    status BIT DEFAULT 1,
+    avatar NVARCHAR(255),
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+/* =====================================================
+   2. Categories - Danh mục sản phẩm
+===================================================== */
+CREATE TABLE Categories (
+    category_id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(100) NOT NULL,
+    description NVARCHAR(MAX),
+    status BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+/* =====================================================
+   3. Products - Sản phẩm
+===================================================== */
+CREATE TABLE Products (
+    product_id INT IDENTITY(1,1) PRIMARY KEY,
+    code NVARCHAR(50) UNIQUE NOT NULL,
+    name NVARCHAR(200) NOT NULL,
+    category_id INT,
+    unit NVARCHAR(50),
+    quantity INT DEFAULT 0,
+    import_price DECIMAL(15,2),
+    export_price DECIMAL(15,2),
+    description NVARCHAR(MAX),
+    image NVARCHAR(255),
+    status BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (category_id) REFERENCES Categories(category_id)
+);
+GO
+
+/* =====================================================
+   4. Suppliers - Nhà cung cấp
+===================================================== */
+CREATE TABLE Suppliers (
+    supplier_id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(200) NOT NULL,
+    phone NVARCHAR(20),
+    email NVARCHAR(100),
+    address NVARCHAR(255),
+    status BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+/* =====================================================
+   5. Customers - Khách hàng
+===================================================== */
+CREATE TABLE Customers (
+    customer_id INT IDENTITY(1,1) PRIMARY KEY,
+    name NVARCHAR(200) NOT NULL,
+    phone NVARCHAR(20),
+    email NVARCHAR(100),
+    address NVARCHAR(255),
+    status BIT DEFAULT 1,
+    created_at DATETIME DEFAULT GETDATE(),
+    updated_at DATETIME DEFAULT GETDATE()
+);
+GO
+
+/* =====================================================
+   6. ImportReceipts - Phiếu nhập kho
+===================================================== */
+CREATE TABLE ImportReceipts (
+    import_id INT IDENTITY(1,1) PRIMARY KEY,
+    supplier_id INT NOT NULL,
+    user_id INT NOT NULL,
+    date DATETIME DEFAULT GETDATE(),
+    total_quantity INT DEFAULT 0,
+    total_amount DECIMAL(15,2) DEFAULT 0,
+    note NVARCHAR(MAX),
+    created_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (supplier_id) REFERENCES Suppliers(supplier_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+GO
+
+/* =====================================================
+   7. ImportDetails - Chi tiết phiếu nhập
+===================================================== */
+CREATE TABLE ImportDetails (
+    import_detail_id INT IDENTITY(1,1) PRIMARY KEY,
+    import_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(15,2) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    FOREIGN KEY (import_id) REFERENCES ImportReceipts(import_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+GO
+
+/* =====================================================
+   8. ExportReceipts - Phiếu xuất kho
+===================================================== */
+CREATE TABLE ExportReceipts (
+    export_id INT IDENTITY(1,1) PRIMARY KEY,
+    customer_id INT NOT NULL,
+    user_id INT NOT NULL,
+    date DATETIME DEFAULT GETDATE(),
+    total_quantity INT DEFAULT 0,
+    total_amount DECIMAL(15,2) DEFAULT 0,
+    note NVARCHAR(MAX),
+    created_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+GO
+
+/* =====================================================
+   9. ExportDetails - Chi tiết phiếu xuất
+===================================================== */
+CREATE TABLE ExportDetails (
+    export_detail_id INT IDENTITY(1,1) PRIMARY KEY,
+    export_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(15,2) NOT NULL,
+    amount DECIMAL(15,2) NOT NULL,
+    FOREIGN KEY (export_id) REFERENCES ExportReceipts(export_id),
+    FOREIGN KEY (product_id) REFERENCES Products(product_id)
+);
+GO
+
+/* =====================================================
+   10. ActivityLogs - Nhật ký hệ thống
+===================================================== */
+CREATE TABLE ActivityLogs (
+    log_id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    action NVARCHAR(100),
+    target_table NVARCHAR(100),
+    target_id INT,
+    description NVARCHAR(MAX),
+    created_at DATETIME DEFAULT GETDATE(),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+GO
