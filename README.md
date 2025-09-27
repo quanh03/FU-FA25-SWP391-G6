@@ -4,12 +4,6 @@ Link Google Docs chứa mock-up giao diện:
 [Phác thảo giao diện — Google Docs](https://docs.google.com/document/d/1AbPB33F1WPxNNuppM_1kC3D9u-Ck-k35ec7YTio_JD4/edit?usp=sharing)
 
 ---
-
-## Hướng dẫn xem & cập nhật
-
-* **Xem**: Click vào link trên để mở mock-up trực tiếp trên Google Docs.
-* **Cập nhật**: Chỉnh sửa ngay trong Google Docs.
-* **Snapshot**: Khi cần lưu bản cố định, export tài liệu ra PDF hoặc PNG và commit vào repo tại thư mục `/docs/mockups/`.
   
 # Danh sách Chức năng (List Functions)
 
@@ -18,8 +12,35 @@ Link Google Sheet chứa danh sách chức năng của hệ thống:
 
 ---
 
-## Hướng dẫn
+# Use Case Diagrams
 
-* **Xem**: Click vào link trên để mở Google Sheet.
-* **Cập nhật**: Chỉnh sửa trực tiếp trong Google Sheet.
-* **Snapshot**: Khi cần lưu bản cố định, export ra Excel (`.xlsx`) hoặc CSV, sau đó commit file đó vào repo tại thư mục `/docs/list_functions/`.
+## 1. Use Case tổng quan
+
+Mô tả toàn bộ hệ thống và mối quan hệ giữa các actor chính:
+![Use Case Tổng quan](./use_cases/Overall_UseCase.png)
+
+---
+
+## 2. Use Case chi tiết
+
+### 2.1. Admin
+
+Chức năng quản trị (tạo tài khoản, phân quyền, quản lý danh mục,…):
+![Admin Use Case](./use_cases/Admin_UseCase.png)
+
+---
+
+### 2.2. Staff
+
+Chức năng nhập kho, xuất kho, quản lý đơn hàng:
+![Staff Use Case](./use_cases/Staff_UseCase.png)
+
+---
+
+### 2.3. Manager
+
+Chức năng xem báo cáo, thống kê, phê duyệt:
+![Manager Use Case](./use_cases/Manager_UseCase.png)
+
+---
+
